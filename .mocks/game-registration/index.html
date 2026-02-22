@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blef - Game Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/styles.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <img src="../shared/logo.svg" alt="Blef logo" />
+        <span>Blef / Game Registration</span>
+      </div>
+      <a class="button ghost" href="../lobby/index.html">Back to Lobby</a>
+    </header>
+
+    <section class="card panel">
+      <h1 class="title" style="font-size: 2.1rem; margin-bottom: 4px;">GameRegistrationView</h1>
+      <p class="subtitle">Prepare a table and wait for players to get ready.</p>
+
+      <div class="grid-2" style="margin-top: 16px;">
+        <div class="tile">
+          <h3 style="margin-top: 0;">Registration details</h3>
+          <div style="margin-bottom: 10px;">
+            <label class="label" for="game-id">Game Id</label>
+            <input class="input" id="game-id" type="text" value="2007" />
+          </div>
+          <div style="margin-bottom: 10px;">
+            <label class="label" for="max-players">Max players</label>
+            <select class="select" id="max-players">
+              <option>2</option>
+              <option selected>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+          </div>
+          <button class="button primary" type="button">Start Game</button>
+        </div>
+
+        <div class="tile">
+          <h3 style="margin-top: 0;">Joined players</h3>
+          <ul class="sidebar-list" style="margin-bottom: 14px;">
+            <li>player_one - ready</li>
+            <li>mika - ready</li>
+            <li>toni - not ready</li>
+          </ul>
+          <div style="display: flex; gap: 8px;">
+            <button class="button success" type="button">Set Ready</button>
+            <button class="button ghost" type="button">Set Unready</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="footer-note">Static mock only. No actions are connected.</p>
+    </section>
+  </main>
+</body>
+</html>

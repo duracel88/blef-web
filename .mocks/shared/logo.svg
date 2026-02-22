@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <defs>
+    <linearGradient id="cardGlow" x1="40" y1="20" x2="220" y2="236" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f25762" />
+      <stop offset="1" stop-color="#9e0f22" />
+    </linearGradient>
+    <linearGradient id="ink" x1="30" y1="30" x2="226" y2="226" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1b1b22" />
+      <stop offset="1" stop-color="#0b0b0d" />
+    </linearGradient>
+  </defs>
+
+  <rect x="34" y="22" width="188" height="212" rx="26" fill="url(#ink)" stroke="url(#cardGlow)" stroke-width="10" />
+
+  <path d="M92 72H146C173 72 191 88 191 112C191 126 184 138 169 145C186 151 196 165 196 183C196 211 174 226 144 226H92V72Z" fill="#101017" />
+  <path d="M107 87V141H144C157 141 166 134 166 118C166 98 151 87 136 87H107Z" fill="#e63946" />
+  <path d="M107 157V211H143C160 211 171 202 171 185C171 165 157 157 142 157H107Z" fill="#b11226" />
+
+  <path d="M52 60L67 47L82 60L67 73L52 60Z" fill="#f25762" />
+  <path d="M188 201L203 188L218 201L203 214L188 201Z" fill="#f25762" />
+
+  <path d="M59 184C59 174 67 167 77 167C87 167 95 174 95 184C95 192 90 199 83 203V214H71V203C64 199 59 192 59 184Z" fill="#f25762" />
+</svg>

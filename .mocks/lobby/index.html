@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blef - Lobby</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/styles.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <img src="../shared/logo.svg" alt="Blef logo" />
+        <span>Blef / Lobby</span>
+      </div>
+      <span class="badge">player_one</span>
+    </header>
+
+    <section class="lobby-layout">
+      <div class="card panel">
+        <div class="tile-head">
+          <div>
+            <h1 class="title" style="font-size: 2.1rem; margin-bottom: 4px;">GamesListView</h1>
+            <p class="subtitle">Create a game or join a pending table.</p>
+          </div>
+          <button class="button primary" type="button">Create New Game</button>
+        </div>
+
+        <h2 style="margin-top: 16px; margin-bottom: 8px;">Ongoing games</h2>
+        <div class="list">
+          <article class="tile">
+            <div class="tile-head">
+              <strong>Game #1042</strong>
+              <span class="badge">IN_PROGRESS</span>
+            </div>
+            <p class="muted">Players: p1, p2, p3</p>
+          </article>
+
+          <article class="tile">
+            <div class="tile-head">
+              <strong>Game #1043</strong>
+              <span class="badge">IN_PROGRESS</span>
+            </div>
+            <p class="muted">Players: alex, toni, kate</p>
+          </article>
+        </div>
+
+        <h2 style="margin-top: 18px; margin-bottom: 8px;">Pending registration</h2>
+        <div class="list">
+          <article class="tile">
+            <div class="tile-head">
+              <strong>Game #2007</strong>
+              <span class="badge">REGISTRATION</span>
+            </div>
+            <p class="muted">Players: player_one, mika</p>
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+              <button class="button success" type="button">Ready</button>
+              <button class="button ghost" type="button">Unready</button>
+            </div>
+          </article>
+
+          <article class="tile">
+            <div class="tile-head">
+              <strong>Game #2008</strong>
+              <span class="badge">REGISTRATION</span>
+            </div>
+            <p class="muted">Players: rexx, nyx</p>
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+              <button class="button success" type="button">Ready</button>
+              <button class="button ghost" type="button">Unready</button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <aside class="card panel">
+        <h2 style="margin-top: 0;">PlayersListView</h2>
+        <ul class="sidebar-list">
+          <li>player_one</li>
+          <li>mika</li>
+          <li>alex</li>
+          <li>toni</li>
+          <li>kate</li>
+          <li>rexx</li>
+          <li>nyx</li>
+        </ul>
+        <p class="footer-note">Layout: 80% games / 20% players.</p>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>
