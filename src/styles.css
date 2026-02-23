@@ -110,6 +110,21 @@ body {
   margin-top: 18px;
 }
 
+.status {
+  margin: 14px 0 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.status-ok {
+  color: #ffc9cf;
+}
+
+.status-error {
+  margin: 0 0 12px;
+  color: #ff9ca8;
+}
+
 .actions {
   margin-top: 22px;
   display: flex;
@@ -168,6 +183,12 @@ body {
 .button:hover {
   transform: translateY(-1px);
   filter: brightness(1.06);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  filter: saturate(0.4);
+  transform: none;
 }
 
 .button.primary {
