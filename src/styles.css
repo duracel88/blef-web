@@ -49,6 +49,10 @@ body {
   max-width: 560px;
 }
 
+.lobby-page {
+  min-height: calc(100vh - 64px);
+}
+
 .card {
   background: linear-gradient(165deg, rgba(39, 39, 51, 0.95), rgba(28, 28, 36, 0.95));
   border: 1px solid var(--line);
@@ -69,6 +73,86 @@ body {
 .panel-wide {
   width: 100%;
   padding: 24px;
+}
+
+.lobby-shell {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.lobby-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lobby-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.lobby-actions .status {
+  margin: 0;
+}
+
+.lobby-grid {
+  display: grid;
+  grid-template-columns: 85% 15%;
+  gap: 18px;
+  min-height: 520px;
+}
+
+.lobby-pane {
+  background: rgba(13, 13, 18, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.lobby-title {
+  margin: 0 0 10px;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+}
+
+.lobby-side-title {
+  margin: 0 0 12px;
+  font-family: "Bebas Neue", "Trebuchet MS", sans-serif;
+  letter-spacing: 1px;
+  font-size: 1.3rem;
+}
+
+.lobby-users {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lobby-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(23, 23, 31, 0.9);
+  border: 1px solid rgba(109, 39, 51, 0.45);
+  font-weight: 600;
+}
+
+.lobby-user-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--accent-strong);
+  box-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
 }
 
 .title {
@@ -214,5 +298,21 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .lobby-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lobby-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lobby-actions {
+    width: 100%;
+    justify-content: space-between;
   }
 }
