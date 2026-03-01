@@ -1,3 +1,4 @@
+import { Client } from "@stomp/stompjs";
 import { FormEvent, useEffect, useState } from "react";
 import logo from "./assets/logo.svg";
 
@@ -58,6 +59,40 @@ function App() {
       controller.abort();
     };
   }, []);
+
+  useEffect(() => {
+    if (me === null) {
+      return;
+    }
+
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const brokerURL = import.meta.env.DEV
+      ? `ws://${window.location.hostname}:8080/api/ws`
+      : `${protocol}://${window.location.host}/api/ws`;
+
+    const client = new Client({
+      brokerURL,
+      reconnectDelay: 5000,
+      debug: (msg) => console.log(msg)
+    });
+
+    client.onConnect = () => {
+      console.log("STOMP connected");
+      client.subscribe("/topic/lobby", (message) => {
+        console.log("Lobby event:", JSON.parse(message.body));
+      });
+    };
+
+    client.onStompError = (frame) => {
+      console.error("Broker error:", frame.headers["message"], frame.body);
+    };
+
+    client.activate();
+
+    return () => {
+      void client.deactivate();
+    };
+  }, [me]);
 
   const onLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
