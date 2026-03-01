@@ -1,11 +1,10 @@
-import { Client } from "@stomp/stompjs";
 import { FormEvent, useEffect, useState } from "react";
 import logo from "./assets/logo.svg";
+import { useLobbySocket } from "./hooks/useLobbySocket";
+import LobbyView from "./views/LobbyView";
 
 type View = "landing" | "login";
 type MeResponse = { username: string };
-type LobbyEvent = { type?: "USER_LOGGED_IN"; username: string; occurredAt: string };
-
 const INVALID_CREDENTIALS_MESSAGE = "Invalid username or password.";
 const GENERIC_LOGIN_MESSAGE = "Login failed. Please try again.";
 const NETWORK_MESSAGE = "Cannot reach backend. Check if API is running.";
@@ -28,7 +27,7 @@ function App() {
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
-  const [joinedUsers, setJoinedUsers] = useState<string[]>([]);
+  const { joinedUsers } = useLobbySocket(me);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -61,59 +60,6 @@ function App() {
       controller.abort();
     };
   }, []);
-
-  useEffect(() => {
-    if (me === null) {
-      return;
-    }
-
-    setJoinedUsers([me]);
-
-    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const brokerURL = import.meta.env.DEV
-      ? `ws://${window.location.hostname}:8080/api/ws`
-      : `${protocol}://${window.location.host}/api/ws`;
-
-    const client = new Client({
-      brokerURL,
-      reconnectDelay: 5000,
-      debug: (msg) => console.log(msg)
-    });
-
-    client.onConnect = () => {
-      console.log("STOMP connected");
-      client.subscribe("/topic/lobby", (message) => {
-        console.log("Lobby message:", message.body);
-        try {
-          const payload = JSON.parse(message.body) as LobbyEvent;
-
-          if (typeof payload.username !== "string" || payload.username.trim() === "") {
-            return;
-          }
-
-          if (payload.type && payload.type !== "USER_LOGGED_IN") {
-            return;
-          }
-
-          setJoinedUsers((current) =>
-            current.includes(payload.username) ? current : [...current, payload.username]
-          );
-        } catch {
-          return;
-        }
-      });
-    };
-
-    client.onStompError = (frame) => {
-      console.error("Broker error:", frame.headers["message"], frame.body);
-    };
-
-    client.activate();
-
-    return () => {
-      void client.deactivate();
-    };
-  }, [me]);
 
   const onLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -159,7 +105,6 @@ function App() {
     }).catch(() => null);
 
     setMe(null);
-    setJoinedUsers([]);
     setView("landing");
     setLoginError(null);
   };
@@ -241,37 +186,7 @@ function App() {
           </div>
         </section>
       ) : (
-        <section className="card lobby-shell">
-          <header className="lobby-header">
-            <div className="brand">
-              <img src={logo} alt="Blef logo" />
-              <span>Lobby</span>
-            </div>
-            <div className="lobby-actions">
-              <p className="status status-ok">Logged in as {me}</p>
-              <button className="button ghost" type="button" onClick={onLogout}>Logout</button>
-            </div>
-          </header>
-
-          <div className="lobby-grid">
-            <section className="lobby-pane lobby-main">
-              <h2 className="title lobby-title">Games</h2>
-              <p className="subtitle">Waiting for game list.</p>
-            </section>
-
-            <aside className="lobby-pane lobby-sidebar">
-              <h3 className="lobby-side-title">Players</h3>
-              <ul className="lobby-users">
-                {joinedUsers.map((user) => (
-                  <li key={user} className="lobby-user">
-                    <span className="lobby-user-dot" />
-                    <span>{user}</span>
-                  </li>
-                ))}
-              </ul>
-            </aside>
-          </div>
-        </section>
+        <LobbyView me={me} joinedUsers={joinedUsers} onLogout={onLogout} />
       )}
     </main>
   );
