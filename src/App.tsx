@@ -1,10 +1,10 @@
 import { FormEvent, useEffect, useState } from "react";
+import { getMe, login, logout } from "./api/authApi";
 import logo from "./assets/logo.svg";
 import { useLobbySocket } from "./hooks/useLobbySocket";
 import LobbyView from "./views/LobbyView";
 
 type View = "landing" | "login";
-type MeResponse = { username: string };
 const INVALID_CREDENTIALS_MESSAGE = "Invalid username or password.";
 const GENERIC_LOGIN_MESSAGE = "Login failed. Please try again.";
 const NETWORK_MESSAGE = "Cannot reach backend. Check if API is running.";
@@ -34,19 +34,14 @@ function App() {
 
     const loadSession = async () => {
       try {
-        const response = await fetch("/api/auth/me", {
-          method: "GET",
-          credentials: "include",
-          signal: controller.signal
-        });
+        const result = await getMe(controller.signal);
 
-        if (!response.ok) {
+        if (!result.ok || result.data === null) {
           setMe(null);
           return;
         }
 
-        const payload = (await response.json()) as MeResponse;
-        setMe(payload.username);
+        setMe(result.data.username);
       } catch {
         setMe(null);
       } finally {
@@ -67,28 +62,24 @@ function App() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username, password })
-      });
+      const result = await login({ username, password });
 
-      if (!response.ok) {
-        if (response.status === 401) {
+      if (!result.ok) {
+        if (result.status === 401) {
           setLoginError(INVALID_CREDENTIALS_MESSAGE);
           return;
         }
 
-        const payload = await response.json().catch(() => null);
-        setLoginError(parseErrorMessage(payload) ?? GENERIC_LOGIN_MESSAGE);
+        setLoginError(parseErrorMessage(result.data) ?? GENERIC_LOGIN_MESSAGE);
         return;
       }
 
-      const payload = (await response.json()) as MeResponse;
-      setMe(payload.username);
+      if (result.data === null) {
+        setLoginError(GENERIC_LOGIN_MESSAGE);
+        return;
+      }
+
+      setMe(result.data.username);
       setPassword("");
       setView("landing");
     } catch {
@@ -99,10 +90,7 @@ function App() {
   };
 
   const onLogout = async () => {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include"
-    }).catch(() => null);
+    await logout().catch(() => null);
 
     setMe(null);
     setView("landing");

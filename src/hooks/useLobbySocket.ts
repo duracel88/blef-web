@@ -1,6 +1,7 @@
 import { Client } from "@stomp/stompjs";
 import { useEffect, useState } from "react";
-import type { LobbyEvent, LobbyUsersResponse } from "../types/lobby";
+import { getLoggedUsers } from "../api/lobbyApi";
+import type { LobbyEvent } from "../types/lobby";
 
 export const useLobbySocket = (me: string | null) => {
   const [joinedUsers, setJoinedUsers] = useState<
@@ -19,23 +20,13 @@ export const useLobbySocket = (me: string | null) => {
 
     const loadUsers = async () => {
       try {
-        const response = await fetch("/api/lobby/users", {
-          method: "GET",
-          credentials: "include",
-          signal: controller.signal
-        });
+        const result = await getLoggedUsers(controller.signal);
 
-        if (!response.ok) {
+        if (!result.ok || result.data === null || !Array.isArray(result.data.users)) {
           return;
         }
 
-        const payload = (await response.json()) as LobbyUsersResponse;
-
-        if (!Array.isArray(payload.users)) {
-          return;
-        }
-
-        const cleaned = payload.users
+        const cleaned = result.data.users
           .filter((username) => typeof username === "string" && username.trim() !== "")
           .map((username) => username.trim());
 
