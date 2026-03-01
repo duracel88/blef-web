@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import type { LobbyEvent } from "../types/lobby";
 
 export const useLobbySocket = (me: string | null) => {
-  const [joinedUsers, setJoinedUsers] = useState<string[]>([]);
+  const [joinedUsers, setJoinedUsers] = useState<
+    { name: string; status: "active" | "leaving" }[]
+  >([]);
 
   useEffect(() => {
     if (me === null) {
@@ -11,7 +13,7 @@ export const useLobbySocket = (me: string | null) => {
       return;
     }
 
-    setJoinedUsers([me]);
+    setJoinedUsers([{ name: me, status: "active" }]);
 
     const protocol = window.location.protocol === "https:" ? "wss" : "ws";
     const brokerURL = import.meta.env.DEV
@@ -35,12 +37,31 @@ export const useLobbySocket = (me: string | null) => {
             return;
           }
 
-          if (payload.type && payload.type !== "USER_LOGGED_IN") {
+          if (payload.type && payload.type !== "USER_LOGGED_IN" && payload.type !== "USER_LOGGED_OUT") {
+            return;
+          }
+
+          if (payload.type === "USER_LOGGED_OUT") {
+            setJoinedUsers((current) =>
+              current.map((user) =>
+                user.name === payload.username ? { ...user, status: "leaving" } : user
+              )
+            );
+
+            window.setTimeout(() => {
+              setJoinedUsers((current) =>
+                current.filter((user) => user.name !== payload.username)
+              );
+            }, 420);
             return;
           }
 
           setJoinedUsers((current) =>
-            current.includes(payload.username) ? current : [...current, payload.username]
+            current.some((user) => user.name === payload.username)
+              ? current.map((user) =>
+                  user.name === payload.username ? { ...user, status: "active" } : user
+                )
+              : [...current, { name: payload.username, status: "active" }]
           );
         } catch {
           return;

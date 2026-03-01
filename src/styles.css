@@ -145,6 +145,12 @@ body {
   background: rgba(23, 23, 31, 0.9);
   border: 1px solid rgba(109, 39, 51, 0.45);
   font-weight: 600;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.lobby-user.is-leaving {
+  opacity: 0;
+  transform: translateX(8px);
 }
 
 .lobby-user-dot {

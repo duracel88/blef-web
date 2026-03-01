@@ -3,7 +3,7 @@ import PlayersList from "../components/lobby/PlayersList";
 
 type LobbyViewProps = {
   me: string;
-  joinedUsers: string[];
+  joinedUsers: { name: string; status: "active" | "leaving" }[];
   onLogout: () => void;
 };
 
