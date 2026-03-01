@@ -3,3 +3,7 @@ export type LobbyEvent = {
   username: string;
   occurredAt: string;
 };
+
+export type LobbyUsersResponse = {
+  users: string[];
+};
