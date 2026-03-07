@@ -36,6 +36,39 @@ To find your hostname:
 
 mDNS (`.local` domains) works out of the box on macOS (Bonjour) and most Linux distributions (Avahi). On Windows, Bonjour or iTunes installation enables mDNS resolution.
 
+#### Custom mDNS Hostname
+
+By default, your dev server is accessible at `http://<your-machine-hostname>.local:5173`. To use a fixed name like `blef-web.local` instead:
+
+**Linux (Avahi)**
+
+Edit `/etc/avahi/avahi-daemon.conf`:
+
+```ini
+[server]
+host-name=blef-web
+```
+
+Then restart Avahi:
+
+```bash
+sudo systemctl restart avahi-daemon
+```
+
+**macOS (Bonjour)**
+
+```bash
+sudo scutil --set LocalHostName blef-web
+```
+
+After setup, start the dev server and access it at:
+
+```
+http://blef-web.local:5173
+```
+
+> **Note**: This changes the mDNS hostname for your entire machine, not just this project. Other devices on the network will see your machine as `blef-web.local`.
+
 ## Build
 
 ```bash
