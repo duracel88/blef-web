@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import logo from "../assets/logo.svg";
 import PlayersList from "../components/lobby/PlayersList";
 
@@ -10,11 +10,18 @@ type LobbyViewProps = {
 
 const LobbyView = ({ me, joinedUsers, onLogout }: LobbyViewProps) => {
   const [activeTab, setActiveTab] = useState("all");
+  const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
+  const [maxPlayers, setMaxPlayers] = useState("6");
+  const [moveTimeSeconds, setMoveTimeSeconds] = useState("60");
   const tabs = [
     { id: "all", label: "All games" },
     { id: "pending", label: "Pending games" },
-    { id: "awating", label: "Awating games" },
+    { id: "awaiting", label: "Awaiting games" },
   ];
+
+  const handleCreateSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
 
   return (
     <section className="card lobby-shell">
@@ -44,17 +51,72 @@ const LobbyView = ({ me, joinedUsers, onLogout }: LobbyViewProps) => {
                 </button>
               ))}
             </div>
-            <button className="button ghost lobby-add" type="button">+</button>
+            <button
+              className="button ghost lobby-add"
+              type="button"
+              onClick={() => setIsCreatePanelOpen(true)}
+            >
+              +
+            </button>
           </div>
-          <div className="lobby-tab-panel">
-            {activeTab === "all" ? (
-              <p className="subtitle">All games view.</p>
-            ) : activeTab === "pending" ? (
-              <p className="subtitle">Pending games view.</p>
-            ) : (
-              <p className="subtitle">Awating games view.</p>
-            )}
-          </div>
+          {isCreatePanelOpen ? (
+            <form className="lobby-create-panel" onSubmit={handleCreateSubmit}>
+              <div className="lobby-create-head">
+                <div>
+                  <h3 className="lobby-create-title">Create game</h3>
+                  <p className="subtitle">Fill in basic game settings.</p>
+                </div>
+                <button
+                  className="button ghost"
+                  type="button"
+                  onClick={() => setIsCreatePanelOpen(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+              <div className="lobby-create-grid">
+                <div className="form-row">
+                  <label className="label" htmlFor="maxPlayers">Maximum players</label>
+                  <input
+                    className="input"
+                    id="maxPlayers"
+                    name="maxPlayers"
+                    type="number"
+                    min={2}
+                    max={12}
+                    value={maxPlayers}
+                    onChange={(event) => setMaxPlayers(event.target.value)}
+                  />
+                </div>
+                <div className="form-row">
+                  <label className="label" htmlFor="moveTimeSeconds">Move time (seconds)</label>
+                  <input
+                    className="input"
+                    id="moveTimeSeconds"
+                    name="moveTimeSeconds"
+                    type="number"
+                    min={10}
+                    max={600}
+                    value={moveTimeSeconds}
+                    onChange={(event) => setMoveTimeSeconds(event.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="lobby-create-actions">
+                <button className="button primary" type="submit">Create game</button>
+              </div>
+            </form>
+          ) : (
+            <div className="lobby-tab-panel">
+              {activeTab === "all" ? (
+                <p className="subtitle">All games view.</p>
+              ) : activeTab === "pending" ? (
+                <p className="subtitle">Pending games view.</p>
+              ) : (
+                <p className="subtitle">Awaiting games view.</p>
+              )}
+            </div>
+          )}
         </section>
 
         <aside className="lobby-pane lobby-sidebar">
