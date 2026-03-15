@@ -1,1 +1,1 @@
-{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts"],"version":"5.9.3"}
+{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/api/authApi.ts","./src/api/http.ts","./src/api/lobbyApi.ts","./src/components/lobby/PlayersList.tsx","./src/hooks/useLobbySocket.ts","./src/types/lobby.ts","./src/views/LobbyView.tsx"],"version":"5.9.3"}

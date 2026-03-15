@@ -1,13 +1,18 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { getMe, login, logout } from "./api/authApi";
+import { createGame, getOpenGames } from "./api/lobbyApi";
 import logo from "./assets/logo.svg";
 import { useLobbySocket } from "./hooks/useLobbySocket";
+import type { CreateGameRequest, OpenRegistrationResponse } from "./types/lobby";
 import LobbyView from "./views/LobbyView";
 
 type View = "landing" | "login";
 const INVALID_CREDENTIALS_MESSAGE = "Invalid username or password.";
 const GENERIC_LOGIN_MESSAGE = "Login failed. Please try again.";
 const NETWORK_MESSAGE = "Cannot reach backend. Check if API is running.";
+const GENERIC_CREATE_GAME_MESSAGE = "Create game failed. Please try again.";
+const GENERIC_GAMES_MESSAGE = "Cannot load games. Please refresh.";
+const NETWORK_GAMES_MESSAGE = "Cannot reach backend while loading games.";
 
 function parseErrorMessage(payload: unknown): string | null {
   if (typeof payload !== "object" || payload === null) {
@@ -27,7 +32,34 @@ function App() {
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [games, setGames] = useState<OpenRegistrationResponse[]>([]);
+  const [isLoadingGames, setIsLoadingGames] = useState(false);
+  const [gamesError, setGamesError] = useState<string | null>(null);
   const { joinedUsers } = useLobbySocket(me);
+
+  const loadGames = useCallback(async (signal?: AbortSignal) => {
+    setIsLoadingGames(true);
+
+    try {
+      const result = await getOpenGames(signal);
+
+      if (!result.ok || result.data === null || !Array.isArray(result.data)) {
+        setGamesError(GENERIC_GAMES_MESSAGE);
+        setGames([]);
+        return GENERIC_GAMES_MESSAGE;
+      }
+
+      setGames(result.data);
+      setGamesError(null);
+      return null;
+    } catch {
+      setGamesError(NETWORK_GAMES_MESSAGE);
+      setGames([]);
+      return NETWORK_GAMES_MESSAGE;
+    } finally {
+      setIsLoadingGames(false);
+    }
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -55,6 +87,22 @@ function App() {
       controller.abort();
     };
   }, []);
+
+  useEffect(() => {
+    if (me === null) {
+      setGames([]);
+      setGamesError(null);
+      setIsLoadingGames(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    void loadGames(controller.signal);
+
+    return () => {
+      controller.abort();
+    };
+  }, [loadGames, me]);
 
   const onLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -88,6 +136,24 @@ function App() {
       setIsSubmitting(false);
     }
   };
+
+  const onCreateGame = useCallback(async (payload: CreateGameRequest) => {
+    try {
+      const result = await createGame(payload);
+
+      if (!result.ok) {
+        return parseErrorMessage(result.data) ?? GENERIC_CREATE_GAME_MESSAGE;
+      }
+
+      if (result.data === null) {
+        return GENERIC_CREATE_GAME_MESSAGE;
+      }
+
+      return await loadGames();
+    } catch {
+      return NETWORK_MESSAGE;
+    }
+  }, [loadGames]);
 
   const onLogout = async () => {
     await logout().catch(() => null);
@@ -174,7 +240,15 @@ function App() {
           </div>
         </section>
       ) : (
-        <LobbyView me={me} joinedUsers={joinedUsers} onLogout={onLogout} />
+        <LobbyView
+          me={me}
+          joinedUsers={joinedUsers}
+          games={games}
+          isLoadingGames={isLoadingGames}
+          gamesError={gamesError}
+          onCreateGame={onCreateGame}
+          onLogout={onLogout}
+        />
       )}
     </main>
   );

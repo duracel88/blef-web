@@ -171,7 +171,48 @@ body {
 .lobby-tab-panel {
   min-height: 160px;
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.lobby-games-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lobby-game-item {
+  border: 1px solid rgba(109, 39, 51, 0.45);
+  background: rgba(20, 20, 26, 0.75);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lobby-game-row {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  gap: 8px;
+}
+
+.lobby-game-id {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.lobby-game-status {
+  font-size: 0.85rem;
+  color: #ffd7db;
+  border: 1px solid rgba(230, 57, 70, 0.45);
+  border-radius: 999px;
+  padding: 3px 9px;
 }
 
 .lobby-create-panel {
